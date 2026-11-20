@@ -1,0 +1,66 @@
+COMMAND: slither AuditTarget.sol --config-file config/slither.raw.json --fail-none --json evidence/before_raw/slither.json
+SLITHER_VERSION:
+0.11.6
+
+SOLC_VERSION:
+solc, the solidity compiler commandline interface
+Version: 0.8.24+commit.e11b9ed9.Linux.g++
+
+
+Detector: weak-prng
+StakingPool_1896.weekdayIndex() (AuditTarget.sol#80-82) uses a weak PRNG: "(block.timestamp / 86400 + 4) % 7 (AuditTarget.sol#81)" 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#weak-PRNG
+
+Detector: encode-packed-collision
+StakingPool_1896.useCode(string,string) (AuditTarget.sol#84-89) calls abi.encodePacked() with multiple dynamic arguments:
+	- id = keccak256(bytes)(abi.encodePacked(campaign,code)) (AuditTarget.sol#85)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#abi-encodePacked-collision
+
+Detector: reentrancy-eth
+Reentrancy in StakingPool_1896.claimSafe() (AuditTarget.sol#73-78):
+	External calls:
+	- (ok,None) = msg.sender.call{value: a}() (AuditTarget.sol#75)
+	State variables written after the call(s):
+	- escrowed[msg.sender] = 0 (AuditTarget.sol#77)
+	StakingPool_1896.escrowed (AuditTarget.sol#16) can be used in cross function reentrancies:
+	- StakingPool_1896.claimSafe() (AuditTarget.sol#73-78)
+	- StakingPool_1896.escrowed (AuditTarget.sol#16)
+	- StakingPool_1896.fundSafe() (AuditTarget.sol#69-71)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1
+
+Detector: unchecked-transfer
+StakingPool_1896.withdrawToken(uint256) (AuditTarget.sol#57-61) ignores return value by rewardToken.transfer(msg.sender,amount) (AuditTarget.sol#60)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-transfer
+
+Detector: tx-origin
+StakingPool_1896.setAdmin(address) (AuditTarget.sol#63-67) uses tx.origin for authorization: require(bool,string)(tx.origin == owner,not owner) (AuditTarget.sol#64)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-usage-of-txorigin
+
+Detector: unchecked-lowlevel
+StakingPool_1896.sweep(address) (AuditTarget.sol#47-50) ignores return value by to.call{value: address(this).balance}() (AuditTarget.sol#49)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-low-level-calls
+
+Detector: low-level-calls
+Low level call in StakingPool_1896.ownerWithdraw(uint256) (AuditTarget.sol#42-45):
+	- (ok,None) = address(owner).call{value: amount}() (AuditTarget.sol#43)
+Low level call in StakingPool_1896.sweep(address) (AuditTarget.sol#47-50):
+	- to.call{value: address(this).balance}() (AuditTarget.sol#49)
+Low level call in StakingPool_1896.claimSafe() (AuditTarget.sol#73-78):
+	- (ok,None) = msg.sender.call{value: a}() (AuditTarget.sol#75)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+
+Detector: naming-convention
+Contract StakingPool_1896 (AuditTarget.sol#10-90) is not in CapWords
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+AuditTarget.sol analyzed (2 contracts with 102 detectors), 10 result(s) found
+Multiple frameworks detected: solc, Solc-json. Using solc (highest priority). Use --compile-force-framework to override.
+'solc --version' running
+'solc AuditTarget.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/home/troung/NT547/Lab06' running
+Compilation warnings/errors on AuditTarget.sol:
+Warning: Return value of low-level calls not used.
+  --> AuditTarget.sol:49:9:
+   |
+49 |         to.call{value: address(this).balance}("");
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
