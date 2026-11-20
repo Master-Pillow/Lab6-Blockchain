@@ -1,0 +1,50 @@
+diff --git a/AuditTarget.sol b/AuditTarget.sol
+index b4eb5ff..82d1a7e 100644
+--- a/AuditTarget.sol
++++ b/AuditTarget.sol
+@@ -46,7 +46,8 @@ contract StakingPool_1896 {
+ 
+     function sweep(address payable to) external onlyOwner {
+         require(to != address(0), "zero");
+-        to.call{value: address(this).balance}("");
++        (bool ok, ) = to.call{value: address(this).balance}("");
++        require(ok, "sweep failed");
+     }
+ 
+     function setPayToken(address t) external onlyOwner {
+@@ -57,11 +58,11 @@ contract StakingPool_1896 {
+     function withdrawToken(uint256 amount) external {
+         require(tokenCredit[msg.sender] >= amount, "not enough");
+         tokenCredit[msg.sender] -= amount;
+-        rewardToken.transfer(msg.sender, amount);
++        require(rewardToken.transfer(msg.sender, amount), "token transfer failed");
+     }
+ 
+     function setAdmin(address newOwner) external {
+-        require(tx.origin == owner, "not owner");
++        require(msg.sender == owner, "not owner");
+         require(newOwner != address(0), "zero");
+         owner = newOwner;
+     }
+@@ -72,17 +73,19 @@ contract StakingPool_1896 {
+ 
+     function claimSafe() external exclusive {
+         uint256 a = escrowed[msg.sender];
++        escrowed[msg.sender] = 0;
+         (bool ok, ) = msg.sender.call{value: a}("");
+         require(ok, "send failed");
+-        escrowed[msg.sender] = 0;
+     }
+ 
+     function weekdayIndex() external view returns (uint256) {
++        // Chi dung de HIEN THI thu trong tuan; khong lam nguon ngau nhien, khong quyet dinh quyen/tien.
++        // slither-disable-next-line weak-prng
+         return (block.timestamp / 1 days + 4) % 7;
+     }
+ 
+     function useCode(string calldata campaign, string calldata code) external {
+-        bytes32 id = keccak256(abi.encodePacked(campaign, code));
++        bytes32 id = keccak256(abi.encode(campaign, code));
+         require(!claimedKeys[id], "used");
+         claimedKeys[id] = true;
+         credit[msg.sender] += 1;

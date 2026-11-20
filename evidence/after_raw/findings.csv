@@ -1,0 +1,6 @@
+﻿index,check,impact,confidence,file,lines,description
+1,events-access,Low,Medium,AuditTarget.sol,"64,65,66,67,68; 67",StakingPool_1896.setAdmin(address) (AuditTarget.sol#64-68) should emit an event for:  	- owner = newOwner (AuditTarget.sol#67)
+2,low-level-calls,Informational,High,AuditTarget.sol,"47,48,49,50,51; 49","Low level call in StakingPool_1896.sweep(address) (AuditTarget.sol#47-51): 	- (ok,None) = to.call{value: address(this).balance}() (AuditTarget.sol#49)"
+3,low-level-calls,Informational,High,AuditTarget.sol,"42,43,44,45; 43","Low level call in StakingPool_1896.ownerWithdraw(uint256) (AuditTarget.sol#42-45): 	- (ok,None) = address(owner).call{value: amount}() (AuditTarget.sol#43)"
+4,low-level-calls,Informational,High,AuditTarget.sol,"74,75,76,77,78,79; 77","Low level call in StakingPool_1896.claimSafe() (AuditTarget.sol#74-79): 	- (ok,None) = msg.sender.call{value: a}() (AuditTarget.sol#77)"
+5,naming-convention,Informational,High,AuditTarget.sol,"10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93",Contract StakingPool_1896 (AuditTarget.sol#10-93) is not in CapWords
