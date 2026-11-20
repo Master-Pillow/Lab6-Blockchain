@@ -214,13 +214,16 @@ Chuỗi RED -> GREEN -> RED -> GREEN được thể hiện bởi các phase Base
 | Mutation M2 (`setAdmin`) | `5a9a3f3` | [44690417861](https://github.com/Master-Pillow/Lab6-Blockchain/actions/runs/44690417861) | RED | `tx-origin` tại AuditTarget.sol#65 |
 | Revert M2 | `8c008e1` | [44690714245](https://github.com/Master-Pillow/Lab6-Blockchain/actions/runs/44690714245) | GREEN | Mutation M2 đã revert |
 
-Commit “lab06: report and evidence” (báo cáo + `evidence/architecture/`) tạo thêm một run chỉ cập nhật báo cáo/evidence, không thuộc các phase trên.
+Commit “lab06: report and evidence” (`e934da42136428d0127473035a15be03423a1876` / `e934da4`: báo cáo, `evidence/architecture/`, `evidence/screenshots/`) tạo thêm một run chỉ cập nhật báo cáo/evidence, không thay đổi `AuditTarget.sol` và không thuộc các phase trên.
 
 ![Hình 22](../evidence/screenshots/h22_actions_run_list.png)
 *Hình 22: Danh sách run của "Lab06 Slither gate": Baseline RED → Patched GREEN → M1 GREEN → Revert M1 GREEN → M2 RED → Revert M2 GREEN.*
 
 ![Hình 23](../evidence/screenshots/h23_git_history.png)
 *Hình 23: Lịch sử Git của nhánh main: các commit baseline, fix, mutation và revert, không reset hay force-push.*
+
+![Hình 24](../evidence/screenshots/h24_submission_zip.png)
+*Hình 24: Commit "lab06: report and evidence" (e934da4) đã push lên main; tools/package_submission.py tạo submissions/NT547_Lab06_24521896.zip gồm 51 file (source, evidence, report, workflow) cùng git_history.txt.*
 
 - [x] `AuditTarget.sol`, `lab_identity.json`
 - [x] `evidence/before_raw/` và `evidence/before_configured/`
